@@ -1,1 +1,83 @@
-/* Stili skeleton */
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--color-primary-bg);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-lg);
+  gap: var(--spacing-md);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.titleSkeleton {
+  height: 28px;
+  background: linear-gradient(90deg, #eaeaea 25%, #f5f5f5 50%, #eaeaea 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: var(--radius-md);
+  flex: 1;
+}
+
+.smallSkeleton {
+  height: 20px;
+  width: 80px;
+  background: linear-gradient(90deg, #eaeaea 25%, #f5f5f5 50%, #eaeaea 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: var(--radius-sm);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  flex: 1;
+}
+
+.statSkeleton {
+  height: 16px;
+  background: linear-gradient(90deg, #eaeaea 25%, #f5f5f5 50%, #eaeaea 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: var(--radius-sm);
+}
+
+.buttonSkeleton {
+  height: 44px;
+  background: linear-gradient(90deg, #eaeaea 25%, #f5f5f5 50%, #eaeaea 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: var(--radius-sm);
+  margin-top: auto;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .titleSkeleton {
+    height: 24px;
+  }
+
+  .buttonSkeleton {
+    height: 40px;
+  }
+}
