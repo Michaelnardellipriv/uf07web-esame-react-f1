@@ -43,7 +43,7 @@ export async function GET() {
         year--;
 
         // Delay per evitare rate limit
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 100));
 
       } catch (error) {
         console.error(`Errore anno ${year}:`, error);

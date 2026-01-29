@@ -10,7 +10,10 @@ import type { RaceStats } from "@/types/race";
 export function useRaces(year?: number, month?: number) {
   return useQuery<RaceStats[], Error>({
     queryKey: ["races", year, month],
-    queryFn: async () => fetchRaces(),
+    queryFn: async () => {
+      const data = await fetchRaces();
+      return data.flatMap((item) => item.races);
+    },
     staleTime: 1000 * 60 * 5,
     retry: 3,
   });
@@ -22,8 +25,9 @@ export function useRace(raceId: string) {
   return useQuery<RaceStats, Error>({
     queryKey: ["races", raceId],
     queryFn: async () => {
-      const races = await fetchRaces();
-      const race = races.find((r) => r.raceId === raceId);
+      const data = await fetchRaces();
+      const allRaces = data.flatMap((item) => item.races);
+      const race = allRaces.find((r) => r.raceId === raceId);
       if (!race) throw new Error("Gara non trovata");
       return race;
     },
