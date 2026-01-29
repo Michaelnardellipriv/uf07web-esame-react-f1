@@ -10,7 +10,7 @@ function Navbar() {
     <nav className={styles.navbar}>
       <div className={styles.container}>
         {/* Logo e link home */}
-        <Link href="/" className={styles.logo}>
+        <Link href="/Home" className={styles.logo}>
           F1 STATS
         </Link>
 

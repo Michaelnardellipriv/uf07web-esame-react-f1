@@ -5,6 +5,9 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background-image: url('Homeimg.png');
+  background-size: cover;
+  background-position: center;
 }
 
 /* Hero Section */
@@ -12,7 +15,7 @@
   position: relative;
   width: 100%;
   flex: 1;
-  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+
   overflow: hidden;
   display: flex;
   align-items: center;
