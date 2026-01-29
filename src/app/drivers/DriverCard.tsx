@@ -3,18 +3,7 @@
 import styles from './DriverCard.module.css';
 import { formatValue, formatDate } from '@/service/utils';
 import Link from 'next/link';
-
-interface DriverCardProps {
-  driverId: string;
-  name: string;
-  surname: string;
-  number: number;
-  nationality?: string;
-  country?: string;
-  birthday: string;
-  shortName: string;
-  url?: string;
-}
+import type { Driver } from '@/types/driver';
 
 export default function DriverCard({
   driverId,
@@ -24,7 +13,7 @@ export default function DriverCard({
   nationality,
   birthday,
   shortName
-}: DriverCardProps) {
+}: Driver) {
   const wikipediaUrl = `https://en.wikipedia.org/wiki/${name}_${surname}`;
 
   return (
