@@ -5,7 +5,7 @@ import CircuitCard from './CircuitCard';
 import Skeleton from '@/components/Skeleton';
 import styles from './page.module.css';
 import { useState } from 'react';
-
+import Image from './CircuitImg.png';
 const ITEMS_PER_PAGE = 6;
 
 export default function CircuitsPage() {
@@ -18,10 +18,12 @@ export default function CircuitsPage() {
   const handleLoadMore = () => {
     setDisplayedCount((prev) => prev + ITEMS_PER_PAGE);
   };
+  
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
+     
         <h1>Circuiti F1</h1>
         <p className={styles.subtitle}>Scopri i circuiti di Formula 1</p>
       </div>

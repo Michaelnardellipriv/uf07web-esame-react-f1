@@ -1,3 +1,4 @@
+
 .card {
   display: flex;
   flex-direction: column;
@@ -7,6 +8,8 @@
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-lg);
   transition: all var(--transition-base);
+   border: 2px solid var(--color-border-light);
+
 }
 
 .card:hover {
@@ -50,7 +53,7 @@
 .year {
   font-size: 28px;
   font-weight: var(--font-weight-extrabold);
-  color: var(--color-primary-text);
+ color: var(--color-card-text-bg);
   margin: 0;
   flex: 1;
 }
@@ -85,7 +88,7 @@
 .label {
   font-size: 13px;
   font-weight: var(--font-weight-semibold);
-  color: var(--color-secondary-text);
+color: var(--color-card-text-bg);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -93,14 +96,14 @@
 .value {
   font-size: 16px;
   font-weight: var(--font-weight-bold);
-  color: var(--color-primary-text);
+  color: var(--color-card-text-bg);
 }
 
 .selectButton {
   width: 100%;
   padding: var(--spacing-md);
   background-color: var(--color-accent);
-  color: var(--color-primary-bg);
+  color: var(--color-card-text-bg);
   border: none;
   border-radius: var(--radius-sm);
   font-weight: var(--font-weight-semibold);

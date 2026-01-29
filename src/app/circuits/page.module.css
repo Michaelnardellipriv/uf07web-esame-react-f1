@@ -3,10 +3,13 @@
   min-height: 100vh;
   background-color: var(--color-primary-bg);
   padding-top: 80px;
+  background-image: url('../circuits/CircuitImg.png');
+  background-size: cover;
+  background-position: center;
 }
 
 .header {
-  background-color: var(--color-primary-bg);
+  
   padding: var(--spacing-2xl) var(--spacing-lg);
   border-bottom: 1px solid var(--color-border-light);
   max-width: 1400px;
@@ -18,12 +21,12 @@
   font-size: 56px;
   font-weight: var(--font-weight-extrabold);
   margin: 0 0 var(--spacing-md) 0;
-  color: var(--color-primary-text);
+  color: white;
 }
 
 .subtitle {
   font-size: 18px;
-  color: var(--color-secondary-text);
+  color: white;
   margin: 0;
   max-width: 500px;
 }

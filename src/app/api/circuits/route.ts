@@ -20,7 +20,7 @@ export async function GET() {
         }
       );
 
-      // ❌ Se l'API non risponde, ferma
+      // Se l'API non risponde, ferma
       if (!res.ok) {
         console.log(`API Error ${res.status}, fermo ciclo`);
         break;
@@ -29,25 +29,25 @@ export async function GET() {
       const data = await res.json();
       const circuits = data.circuits ?? [];
 
-      // ❌ Se non ci sono dati, ferma
+      // Se non ci sono dati, ferma
       if (circuits.length === 0) {
-        console.log(`Batch vuoto, fermo ciclo`);
+        console.log('Batch vuoto, fermo ciclo');
         break;
       }
 
       console.log(`Batch ${batchCount + 1}: offset=${offset}, ${circuits.length} circuiti`);
       allCircuits.push(...circuits);
 
-      // ❌ Se ricevi meno elementi del limit, ferma (ultimo batch)
+      // Se ricevi meno elementi del limit, ferma (ultimo batch)
       if (circuits.length < limit) {
-        console.log(`Ultimo batch completato, fermo ciclo`);
+        console.log('Ultimo batch completato, fermo ciclo');
         break;
       }
 
       offset += limit;
       batchCount++;
 
-      // ⏱️ evita il rate limit
+      // Evita il rate limit
       await new Promise(r => setTimeout(r, 300));
     }
 
@@ -56,6 +56,7 @@ export async function GET() {
     }
 
     console.log(`Ciclo terminato - Totale circuiti: ${allCircuits.length} in ${batchCount} batch`);
+    
     return Response.json({ circuits: allCircuits, batchCount });
 
   } catch (error) {

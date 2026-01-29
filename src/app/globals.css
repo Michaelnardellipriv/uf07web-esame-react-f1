@@ -4,9 +4,10 @@
 
 :root {
   /* Color Palette - Strict Monochrome */
-  --color-primary-bg: #FFFFFF;
-  --color-primary-text: #000000;
-  --color-secondary-text: #666666;
+  --color-primary-bg: #FFFFFF ;
+  --color-card-text-bg: black;
+  --color-primary-text: white;
+  --color-secondary-text: white;
   --color-accent: #000000;
   --color-border-light: #eaeaea;
   --color-border-gray: #e5e5e5;
