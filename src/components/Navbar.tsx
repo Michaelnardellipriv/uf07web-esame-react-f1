@@ -17,11 +17,6 @@ function Navbar() {
         {/* Link di navigazione principale */}
         <ul className={styles.navLinks}>
           <li>
-            <Link href="/" className={styles.link}>
-              Home
-            </Link>
-          </li>
-          <li>
             <Link href="/drivers" className={styles.link}>
               Piloti
             </Link>
