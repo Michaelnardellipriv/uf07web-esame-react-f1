@@ -1,57 +1,63 @@
-// Interfaccia che rappresenta una gara F1 con tutte le informazioni
 import type { RaceStats } from "@/types/race";
 
-// Interfaccia per la risposta dell'API delle gare
 interface RacesResponse {
-  api: string;
-  races: RaceStats;
-  limit: number;
-  offset: number;
+  races: RaceStats[];
   total: number;
+  yearsLoaded: number;
 }
 
-// Recupera la lista delle gare F1 dall'API esterna
-// Include informazioni del circuito per ogni gara
-export async function fetchRaces(limit: number = 20): Promise<RaceStats[]> {
+/**
+ * Recupera tutte le gare disponibili
+ */
+export async function fetchRaces(): Promise<Array<{ year: string; races: RaceStats[] }>> {
   try {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
+    console.log('Richiesta tutte le gare...');
     
-    // Fetch del mese corrente e dei mesi precedenti se necessario
-    const allRaces: RaceStats[] = [];
-    let currentYear = year;
-    let currentMonth = parseInt(month);
-
-    // Fetcha fino a ottenere almeno 'limit' gare
-    while (allRaces.length < limit && currentYear >= 2024) {
-      const monthStr = String(currentMonth).padStart(2, '0');
-      
-      try {
-        const res = await fetch(
-          `/api/races?year=${currentYear}&month=${monthStr}&limit=30`
-        );
-        
-        if (res.ok) {
-          const data: RacesResponse = await res.json();
-          if (data.races) {
-            allRaces.push(data.races);
-          }
-        }
-      } catch (err) {
-        // Continua con il mese precedente se questo fallisce
-      }
-
-      // Vai al mese precedente
-      currentMonth--;
-      if (currentMonth < 1) {
-        currentMonth = 12;
-        currentYear--;
-      }
+    const res = await fetch('/api/races', {
+      headers: { 'Accept': 'application/json' },
+    });
+    
+    if (!res.ok) {
+      console.log(`Errore API: ${res.status}`);
+      return [];
+    }
+    
+    const data: RacesResponse = await res.json();
+    
+    if (!data.races || data.races.length === 0) {
+      console.log('Nessuna gara trovata');
+      return [];
     }
 
-    return allRaces.slice(0, limit);
+    console.log(`Ricevute ${data.races.length} gare dall'API`);
+    
+    // Organizza le gare per anno
+    const racesByYear = new Map<string, RaceStats[]>();
+    
+    data.races.forEach((race: any) => {
+      // Estrai l'anno dalla data della gara
+      const year = new Date(race.schedule.race.date).getFullYear().toString();
+      
+      if (!racesByYear.has(year)) {
+        racesByYear.set(year, []);
+      }
+      
+      racesByYear.get(year)!.push({
+        ...race,
+        season: year
+      });
+    });
+    
+    // Converti in array ordinato per anno (dal più recente)
+    const result = Array.from(racesByYear.entries())
+      .map(([year, races]) => ({ year, races }))
+      .sort((a, b) => parseInt(b.year) - parseInt(a.year));
+    
+    console.log(`Totale: ${result.length} anni con ${data.races.length} gare`);
+    return result;
+    
   } catch (error) {
-    throw error instanceof Error ? error : new Error('Errore sconosciuto');
+    console.error('Errore nel fetch delle gare:', error);
+    return [];
   }
 }

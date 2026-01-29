@@ -1,23 +1,69 @@
-export async function GET(request: Request) {
+export async function GET() {
+  const allSeasons: any[] = [];
+  const limit = 50;
+  let offset = 0;
+  let batchCount = 0;
+  const maxBatches = 1000; // Safety: massimo 1000 batch
+
   try {
-    const { searchParams } = new URL(request.url);
-    const limit = searchParams.get('limit') || '50';
-    const offset = searchParams.get('offset') || '0';
+    console.log('Inizio caricamento tutte le stagioni...');
 
-    const res = await fetch(
-      `https://f1connectapi.vercel.app/api/seasons?limit=${limit}&offset=${offset}`
-    );
+    while (batchCount < maxBatches) {
+      const res = await fetch(
+        `https://f1connectapi.vercel.app/api/seasons?limit=${limit}&offset=${offset}`,
+        {
+          headers: {
+            'User-Agent': 'Next.js Server',
+            'Accept': 'application/json',
+          },
+          next: { revalidate: 3600 }, // cache 1 ora
+        }
+      );
 
-    if (!res.ok) {
-      throw new Error('Errore dal server API');
+      // ❌ Se l'API non risponde, ferma
+      if (!res.ok) {
+        console.log(`API Error ${res.status}, fermo ciclo`);
+        break;
+      }
+
+      const data = await res.json();
+      const seasons = data.championships ?? [];
+
+      // ❌ Se non ci sono dati, ferma
+      if (seasons.length === 0) {
+        console.log(`Batch vuoto, fermo ciclo`);
+        break;
+      }
+
+      console.log(`Batch ${batchCount + 1}: offset=${offset}, ${seasons.length} stagioni`);
+      allSeasons.push(...seasons);
+
+      // ❌ Se ricevi meno elementi del limit, ferma (ultimo batch)
+      if (seasons.length < limit) {
+        console.log(`Ultimo batch completato, fermo ciclo`);
+        break;
+      }
+
+      offset += limit;
+      batchCount++;
+
+      // ⏱️ evita il rate limit
+      await new Promise(r => setTimeout(r, 300));
     }
 
-    const data = await res.json();
-    return Response.json(data);
+    if (batchCount >= maxBatches) {
+      console.warn(`Raggiunto massimo batch (${maxBatches})`);
+    }
+
+    console.log(`Ciclo terminato - Totale stagioni: ${allSeasons.length} in ${batchCount} batch`);
+    return Response.json({ championships: allSeasons, batchCount });
+
   } catch (error) {
+    console.error('Errore seasons API:', error);
     return Response.json(
       { error: error instanceof Error ? error.message : 'Errore sconosciuto' },
       { status: 500 }
     );
   }
 }
+   
