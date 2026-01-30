@@ -8,7 +8,7 @@ export async function GET() {
   const allCircuits: any[] = [];
   
   // Parametri paginazione
-  const limit = 50; // Numero di elementi per richiesta
+  const limit = 84; // Numero di elementi per richiesta
   let offset = 0; // Offset della paginazione
   let batchCount = 0; // Contatore batch
   const maxBatches = 1000; // Limite massimo batch per sicurezza

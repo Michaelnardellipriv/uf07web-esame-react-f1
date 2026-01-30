@@ -1,74 +1,54 @@
 /**
  * Route handler API per il recupero di tutte le gare F1 dalla storia
- * Implementa un loop all'indietro nel tempo partendo dall'anno corrente
+ * Implementa richieste parallele per velocità massima
  * Carica dati per ogni anno disponibile fino al 1950
  * Utilizza caching di 1 ora per ottimizzare le prestazioni
  */
 export async function GET() {
-  // Array per accumulare tutte le gare fetched
-  const allRaces: any[] = [];
+  const minYear = 1950;
+  const currentYear = new Date().getFullYear();
   
-  // Inizializza con l'anno corrente e scende all'indietro
-  let year = new Date().getFullYear();
-  let yearCount = 0; // Contatore anni caricati
-  const minYear = 1950; // Limite minimo anno (inizio F1)
-
   try {
-    console.log(`Inizio caricamento gare da ${year} all'indietro...`);
+    console.log(`Inizio caricamento gare in parallelo da ${currentYear} a ${minYear}...`);
 
-    // Loop decrescente dagli anni recenti ai precedenti
-    while (year >= minYear) {
-      try {
-        console.log(`Caricamento gare anno ${year}...`);
+    // Genera array di anni da caricare
+    const years = Array.from(
+      { length: currentYear - minYear + 1 },
+      (_, i) => currentYear - i
+    );
 
-        // Effettua richiesta all'API per l'anno specifico
-        const res = await fetch(
-          `https://f1connectapi.vercel.app/api/${year}`,
-          {
-            headers: {
-              'User-Agent': 'Next.js Server',
-              'Accept': 'application/json',
-            },
-            next: { revalidate: 3600 }, // Cache per 1 ora
-          }
-        );
+    // Carica tutti gli anni in parallelo
+    const results = await Promise.allSettled(
+      years.map(year =>
+        fetch(`https://f1connectapi.vercel.app/api/${year}`, {
+          headers: {
+            'User-Agent': 'Next.js Server',
+            'Accept': 'application/json',
+          },
+          next: { revalidate: 3600 },
+        })
+          .then(res => res.json())
+          .then(data => ({ year, data }))
+      )
+    );
 
-        // Verifica se la risposta e valida
-        if (!res.ok) {
-          console.log(`Anno ${year}: API Error ${res.status}, fermo ciclo`);
-          break;
-        }
+    // Elabora risultati
+    const allRaces: any[] = [];
+    let yearsLoaded = 0;
 
-        const data = await res.json();
-
-        // Ferma se non ci sono gare per questo anno
-        if (!data.races || data.races.length === 0) {
-          console.log(`Anno ${year}: Batch vuoto, fermo ciclo`);
-          break;
-        }
-
-        console.log(`Anno ${year}: ${data.races.length} gare caricate`);
-        allRaces.push(...data.races);
-        yearCount++;
-
-        // Decrementa l'anno per il prossimo ciclo
-        year--;
-
-        // Delay per evitare rate limiting dell'API
-        await new Promise(r => setTimeout(r, 100));
-
-      } catch (error) {
-        console.error(`Errore anno ${year}:`, error);
-        break;
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled' && result.value.data?.races?.length > 0) {
+        allRaces.push(...result.value.data.races);
+        yearsLoaded++;
       }
-    }
+    });
 
-    console.log(`Ciclo terminato - Totale gare: ${allRaces.length} da ${yearCount} anni`);
+    console.log(`Ciclo terminato - Totale gare: ${allRaces.length} da ${yearsLoaded} anni`);
 
     return Response.json({
       races: allRaces,
       total: allRaces.length,
-      yearsLoaded: yearCount,
+      yearsLoaded,
     });
 
   } catch (error) {
