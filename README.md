@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Formula 1 Dashboard – React + TypeScript
 
-## Getting Started
+## Descrizione del progetto
 
-First, run the development server:
+Questa applicazione è una Single Page Application (SPA) sviluppata in React e TypeScript che consente di esplorare dati relativi al mondo della Formula 1, come stagioni, gare, piloti, team e circuiti.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Il progetto è stato realizzato come prova d’esame UF07WEB (A.S. 2025/26) e ha l’obiettivo di dimostrare l’utilizzo di API esterne, routing client-side e gestione dello stato asincrono.
+
+---
+
+## Obiettivi
+
+- Consumare dati da un’API REST esterna
+- Gestire il routing tra più pagine
+- Visualizzare liste e dettagli
+- Utilizzare TypeScript per la tipizzazione dei dati
+- Gestire chiamate API tramite React Query
+
+---
+
+## Tecnologie utilizzate
+
+- React
+- TypeScript
+- Next.js (App Router)
+- @tanstack/react-query
+- Fetch API
+- CSS
+
+---
+
+## API utilizzata
+
+L’applicazione utilizza una API pubblica dedicata alla Formula 1, che fornisce informazioni su:
+
+- stagioni
+- gare
+- piloti
+- team
+- circuiti
+
+Le chiamate vengono effettuate tramite richieste HTTP di tipo GET e gestite con React Query.
+
+Non sono necessarie credenziali o API key.
+
+---
+
+## Struttura del progetto
+
+```txt
+src/
+ ├─ app/              # Routing (Next.js App Router)
+ ├─ components/       # Componenti riutilizzabili
+ ├─ hooks/            # Custom hooks per React Query
+ ├─ service/          # Funzioni per le chiamate API
+ ├─ types/            # Interfacce TypeScript
+ └─ providers/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Provider globali (React Query)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Installazione ed esecuzione
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Clonare il repository:
 
-## Learn More
+git clone <https://github.com/username/nome-repo.git>
+Installare le dipendenze:
 
-To learn more about Next.js, take a look at the following resources:
+npm install
+Avviare il progetto in modalità sviluppo:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+npm run dev
+Aprire il browser all’indirizzo:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+<http://localhost:3000>
 
-## Deploy on Vercel
+## Funzionalità implementate
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Visualizzazione di liste di dati (stagioni, piloti, team, gare)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Navigazione tra più pagine tramite routing
+
+Pagine di dettaglio con parametri dinamici
+
+Chiamate API GET gestite con React Query
+
+Tipizzazione dei dati API con TypeScript
+
+Componenti riutilizzabili
+
+Gestione dello stato di caricamento
+
+## Note finali
+
+Il progetto rispetta i requisiti minimi richiesti per la sufficienza dell’esame UF07WEB ed è stato strutturato con particolare attenzione alla leggibilità del codice e alla separazione delle responsabilità.
+
+Possibili miglioramenti futuri includono:
+
+chiamate API di tipo POST
+
+gestione avanzata degli errori
+
+paginazione dei dati
+
+miglioramenti UI/UX
