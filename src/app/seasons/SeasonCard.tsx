@@ -1,9 +1,19 @@
 'use client';
 
+/**
+ * Componente card per visualizzare i dettagli di una stagione F1
+ * Mostra anno e nome del campionato
+ */
+
 import styles from './SeasonCard.module.css';
 import { Season } from '@/types/season'; 
 
-
+/**
+ * Componente card per una stagione F1
+ * 
+ * @param props - Proprietà della stagione da visualizzare
+ * @returns Card con informazioni della stagione
+ */
 export default function SeasonCard({
 
   championshipName,
@@ -13,11 +23,13 @@ export default function SeasonCard({
  
   return (
     <div className={styles.card}>
+      {/* Header con anno della stagione */}
       <div className={styles.header}>
         <h3 className={styles.year}>{year}</h3>
       </div>
    
 
+      {/* Dettagli della stagione */}
       <div className={styles.details}>
         <ul className={styles.statsList}>
           <li className={styles.statsItem}>
@@ -27,6 +39,7 @@ export default function SeasonCard({
         </ul>
       </div>
       
+      {/* Link esterno per più informazioni su Wikipedia */}
       <a href={url} target="_blank" rel="noopener noreferrer" className={styles.wikiButton}>
         Più info
       </a>

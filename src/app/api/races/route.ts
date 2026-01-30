@@ -1,16 +1,27 @@
+/**
+ * Route handler API per il recupero di tutte le gare F1 dalla storia
+ * Implementa un loop all'indietro nel tempo partendo dall'anno corrente
+ * Carica dati per ogni anno disponibile fino al 1950
+ * Utilizza caching di 1 ora per ottimizzare le prestazioni
+ */
 export async function GET() {
+  // Array per accumulare tutte le gare fetched
   const allRaces: any[] = [];
+  
+  // Inizializza con l'anno corrente e scende all'indietro
   let year = new Date().getFullYear();
-  let yearCount = 0;
-  const minYear = 1950; // Safety: massimo fino al 1950
+  let yearCount = 0; // Contatore anni caricati
+  const minYear = 1950; // Limite minimo anno (inizio F1)
 
   try {
     console.log(`Inizio caricamento gare da ${year} all'indietro...`);
 
+    // Loop decrescente dagli anni recenti ai precedenti
     while (year >= minYear) {
       try {
         console.log(`Caricamento gare anno ${year}...`);
 
+        // Effettua richiesta all'API per l'anno specifico
         const res = await fetch(
           `https://f1connectapi.vercel.app/api/${year}`,
           {
@@ -18,11 +29,11 @@ export async function GET() {
               'User-Agent': 'Next.js Server',
               'Accept': 'application/json',
             },
-            next: { revalidate: 3600 }, // cache 1 ora
+            next: { revalidate: 3600 }, // Cache per 1 ora
           }
         );
 
-        // ❌ Se l'API non risponde, ferma
+        // Verifica se la risposta e valida
         if (!res.ok) {
           console.log(`Anno ${year}: API Error ${res.status}, fermo ciclo`);
           break;
@@ -30,7 +41,7 @@ export async function GET() {
 
         const data = await res.json();
 
-        // ❌ Se non ci sono dati, ferma
+        // Ferma se non ci sono gare per questo anno
         if (!data.races || data.races.length === 0) {
           console.log(`Anno ${year}: Batch vuoto, fermo ciclo`);
           break;
@@ -40,9 +51,10 @@ export async function GET() {
         allRaces.push(...data.races);
         yearCount++;
 
+        // Decrementa l'anno per il prossimo ciclo
         year--;
 
-        // Delay per evitare rate limit
+        // Delay per evitare rate limiting dell'API
         await new Promise(r => setTimeout(r, 100));
 
       } catch (error) {

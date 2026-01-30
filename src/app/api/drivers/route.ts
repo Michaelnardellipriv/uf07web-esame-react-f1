@@ -1,14 +1,24 @@
+/**
+ * Route handler API per il recupero di tutti i piloti F1
+ * Implementa paginazione con offset per gestire grandi quantita di dati
+ * Utilizza caching di 1 ora per ottimizzare le prestazioni
+ */
 export async function GET() {
+  // Array per accumulare tutti i piloti fetched
   const allDrivers: any[] = [];
-  const limit = 50;
-  let offset = 0;
-  let batchCount = 0;
-  const maxBatches = 1000; // Safety: massimo 1000 batch
+  
+  // Parametri paginazione
+  const limit = 50; // Numero di elementi per richiesta
+  let offset = 0; // Offset della paginazione
+  let batchCount = 0; // Contatore batch
+  const maxBatches = 1000; // Limite massimo batch per sicurezza
 
   try {
     console.log('Inizio caricamento tutti i piloti...');
 
+    // Loop fino a raggiungere il limite o non avere piu dati
     while (batchCount < maxBatches) {
+      // Effettua richiesta all'API esterna con paginazione
       const res = await fetch(
         `https://f1connectapi.vercel.app/api/drivers?limit=${limit}&offset=${offset}`,
         {
@@ -16,11 +26,11 @@ export async function GET() {
             'User-Agent': 'Next.js Server',
             'Accept': 'application/json',
           },
-          next: { revalidate: 3600 }, // cache 1 ora
+          next: { revalidate: 3600 }, // Cache per 1 ora
         }
       );
 
-      // ❌ Se l'API non risponde, ferma
+      // Verifica se la risposta e valida
       if (!res.ok) {
         console.log(`API Error ${res.status}, fermo ciclo`);
         break;
@@ -29,7 +39,7 @@ export async function GET() {
       const data = await res.json();
       const drivers = data.drivers ?? [];
 
-      // ❌ Se non ci sono dati, ferma
+      // Ferma se non ci sono piu dati
       if (drivers.length === 0) {
         console.log(`Batch vuoto, fermo ciclo`);
         break;
@@ -38,28 +48,32 @@ export async function GET() {
       console.log(`Batch ${batchCount + 1}: offset=${offset}, ${drivers.length} piloti`);
       allDrivers.push(...drivers);
 
-      // ❌ Se ricevi meno elementi del limit, ferma (ultimo batch)
+      // Ferma se ricevi meno elementi del limit (ultimo batch)
       if (drivers.length < limit) {
         console.log(`Ultimo batch completato, fermo ciclo`);
         break;
       }
 
+      // Incrementa offset e contatore
       offset += limit;
       batchCount++;
 
-      // ⏱️ evita il rate limit
+      // Delay per evitare rate limiting dell'API
       await new Promise(r => setTimeout(r, 300));
     }
 
+    // Warning se raggiungiamo il limite massimo batch
     if (batchCount >= maxBatches) {
       console.warn(`Raggiunto massimo batch (${maxBatches})`);
     }
 
     console.log(`Ciclo terminato - Totale piloti: ${allDrivers.length} in ${batchCount} batch`);
+    // Ritorna i piloti come JSON
     return Response.json({ drivers: allDrivers, batchCount });
 
   } catch (error) {
     console.error('Errore drivers API:', error);
+    // Ritorna errore con stato 500
     return Response.json(
       { error: error instanceof Error ? error.message : 'Errore sconosciuto' },
       { status: 500 }

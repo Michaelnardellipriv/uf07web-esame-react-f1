@@ -1,9 +1,17 @@
 'use client';
 
+/**
+ * Componente card per visualizzare i dettagli di un team F1
+ * Mostra informazioni come nazionalità, anno debutto, campionati costruttori e piloti
+ */
+
 import styles from './TeamCard.module.css';
 import { formatValue } from '@/service/utils';
 import Link from 'next/link';
 
+/**
+ * Interfaccia per le proprietà del componente TeamCard
+ */
 interface TeamCardProps {
   teamId: string;
   teamName: string;
@@ -16,6 +24,12 @@ interface TeamCardProps {
   url?: string;
 }
 
+/**
+ * Componente card per un team F1
+ * 
+ * @param props - Proprietà del team da visualizzare
+ * @returns Card con informazioni dettagliate del team
+ */
 export default function TeamCard({
   teamId,
   teamName,
@@ -25,15 +39,18 @@ export default function TeamCard({
   driversChampionships,
   url
 }: TeamCardProps) {
+  // Genera URL Wikipedia per il team
   const wikipediaUrl = `https://en.wikipedia.org/wiki/${teamName.replace(/\s+/g, '_')}`;
 
   return (
     <div className={styles.card}>
+      {/* Header con nome del team */}
       <div className={styles.header}>
         <h3 className={styles.name}>{teamName}</h3>
       </div>
    
 
+      {/* Lista di statistiche e dettagli del team */}
       <div className={styles.details}>
         <ul className={styles.statsList}>
           <li className={styles.statsItem}>
@@ -55,6 +72,7 @@ export default function TeamCard({
         </ul>
       </div>
       
+      {/* Link esterno per più informazioni su Wikipedia */}
       <a href={wikipediaUrl} target="_blank" rel="noopener noreferrer" className={styles.wikiButton}>
         Più info
       </a>

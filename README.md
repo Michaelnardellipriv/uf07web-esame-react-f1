@@ -90,16 +90,3 @@ Componenti riutilizzabili
 
 Gestione dello stato di caricamento
 
-## Note finali
-
-Il progetto rispetta i requisiti minimi richiesti per la sufficienza dell’esame UF07WEB ed è stato strutturato con particolare attenzione alla leggibilità del codice e alla separazione delle responsabilità.
-
-Possibili miglioramenti futuri includono:
-
-chiamate API di tipo POST
-
-gestione avanzata degli errori
-
-paginazione dei dati
-
-miglioramenti UI/UX
