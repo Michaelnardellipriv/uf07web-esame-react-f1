@@ -26,7 +26,7 @@ interface DriversResponse {
 export async function fetchDrivers(): Promise<Driver[]> {
   try {
     // Effettua richiesta all'endpoint API
-    const res = await fetch('/api/drivers');
+    const res = await fetch('http://localhost:3000/api/drivers');
 
     // Verifica se la risposta e valida
     if (!res.ok) {

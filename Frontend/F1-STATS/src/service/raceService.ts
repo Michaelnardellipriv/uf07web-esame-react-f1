@@ -13,7 +13,7 @@ export async function fetchRaces(): Promise<Array<{ year: string; races: RaceSta
   try {
     console.log('Richiesta tutte le gare...');
     
-    const res = await fetch('/api/races', {
+    const res = await fetch('http://localhost:3000/api/races', {
       headers: { 'Accept': 'application/json' },
     });
     

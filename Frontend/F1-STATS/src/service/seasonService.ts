@@ -26,7 +26,7 @@ interface SeasonsResponse {
 export async function fetchSeasons(): Promise<Season[]> {
   try {
     // Effettua richiesta all'endpoint API
-    const res = await fetch('/api/seasons');
+    const res = await fetch('http://localhost:3000/api/seasons');
 
     // Verifica se la risposta e valida
     if (!res.ok) {

@@ -23,7 +23,7 @@ interface CircuitsResponse {
 export async function fetchCircuits(): Promise<Circuit[]> {
   try {
     // Effettua richiesta all'endpoint API
-    const res = await fetch('/api/circuits');
+    const res = await fetch('http://localhost:3000/api/circuits');
     
     // Verifica se la risposta e valida
     if (!res.ok) {

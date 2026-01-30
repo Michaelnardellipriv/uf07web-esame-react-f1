@@ -26,7 +26,7 @@ interface TeamsResponse {
 export async function fetchTeams(): Promise<Team[]> {
   try {
     // Effettua richiesta all'endpoint API
-    const res = await fetch('/api/teams');
+    const res = await fetch('http://localhost:3000/api/teams');
 
     // Verifica se la risposta e valida
     if (!res.ok) {
