@@ -1,17 +1,19 @@
-# Formula 1 Dashboard – React + TypeScript
+# Formula 1 Dashboard – React + Vite + Next.js Backend
 
 ## Descrizione del progetto
 
-Questa applicazione è una **Single Page Application (SPA)** moderna sviluppata con **Next.js 16**, **React 19** e **TypeScript** che consente di esplorare e visualizzare dati completi relativi al mondo della Formula 1, inclusi stagioni, gare, piloti, team e circuiti.
+Questa applicazione è una **Single Page Application (SPA)** moderna sviluppata con **React 19** (frontend Vite) e **Next.js 16** (backend API) che consente di esplorare e visualizzare dati completi relativi al mondo della Formula 1, inclusi stagioni, gare, piloti, team e circuiti.
 
 Il progetto è stato realizzato come prova d'esame **UF07WEB (A.S. 2025/26)** e dimostra l'implementazione di:
 
+- Architettura **separata Frontend/Backend**: React+Vite per la UI, Next.js per le API
 - Consumo di API REST esterne con gestione avanzata della cache
-- Routing dinamico con Next.js App Router
-- State management asincrono con React Query
+- Routing dinamico con React Router
+- State management asincrono con TanStack Query (ex React Query)
 - TypeScript con tipi complessi (generici, union types, intersection types)
-- Architettura a strati (API routes → services → hooks → components)
+- Architettura a strati (Backend API → Services → Custom Hooks → Components)
 - Error handling e loading states per UX ottimale
+- CORS handling tra frontend e backend
 
 ---
 
@@ -29,14 +31,16 @@ Il progetto è stato realizzato come prova d'esame **UF07WEB (A.S. 2025/26)** e 
 
 ## Tecnologie e versioni
 
-| Tecnologia    | Versione  | Utilizzo                          |
-| ------------- | --------- | --------------------------------- |
-| **React**     | 19.2.3    | Framework UI                      |
-| **Next.js**   | 16.1.5    | Server e routing (App Router)     |
-| **TypeScript**| 5.x       | Type safety completa              |
-| **React Query** | 5.90.20 | Data fetching e caching           |
-| **CSS Modules** | Built-in | Styling scoped                   |
-| **Fetch API** | Native    | HTTP requests                     |
+| Tecnologia           | Versione  | Utilizzo                          |
+| -------------------- | --------- | --------------------------------- |
+| **React**            | 19.2.3    | Framework UI (Frontend)           |
+| **Vite**             | 5.4.x     | Build tool e dev server           |
+| **React Router**     | 7.13.0    | Routing SPA (Frontend)            |
+| **Next.js**          | 16.1.5    | Server e API routes (Backend)     |
+| **TypeScript**       | 5.x       | Type safety completa              |
+| **TanStack Query**   | 5.90.20   | Data fetching e caching           |
+| **CSS Modules**      | Built-in  | Styling scoped                    |
+| **Fetch API**        | Native    | HTTP requests                     |
 
 ---
 
@@ -65,56 +69,75 @@ L'applicazione utilizza la **F1 Connect API** (https://f1connectapi.vercel.app) 
 ## Struttura del progetto
 
 ```
-src/
-├── app/                      # Next.js App Router
-│   ├── api/                  # API routes (Backend)
-│   │   ├── circuits/route.ts # GET /api/circuits
-│   │   ├── drivers/route.ts  # GET /api/drivers
-│   │   ├── races/route.ts    # GET /api/races
-│   │   ├── seasons/route.ts  # GET /api/seasons
-│   │   └── teams/route.ts    # GET /api/teams
-│   ├── circuits/             # Pagina circuiti
-│   ├── drivers/              # Pagina piloti
-│   ├── races/                # Pagina gare
-│   ├── seasons/              # Pagina stagioni
-│   ├── teams/                # Pagina team
-│   ├── layout.tsx            # Layout root (con QueryProvider)
-│   ├── page.tsx              # Home page
-│   └── globals.css           # Stili globali
+uf07web-esame-react-f1/
 │
-├── components/               # Componenti riutilizzabili
-│   ├── Navbar.tsx            # Barra di navigazione
-│   ├── QueryProvider.tsx     # Provider React Query (client-side)
-│   ├── Skeleton.tsx          # Skeleton loader
-│   ├── ErrorBoundary.tsx     # Error catching
-│   ├── CircuitCard.tsx       # Card per circuiti
-│   ├── DriverCard.tsx        # Card per piloti
-│   ├── RaceCard.tsx          # Card per gare (complessa)
-│   ├── SeasonCard.tsx        # Card per stagioni
-│   └── TeamCard.tsx          # Card per team
+├── Frontend/F1-STATS/                # React + Vite (SPA)
+│   ├── src/
+│   │   ├── App.tsx                   # Root component con routing
+│   │   ├── main.tsx                  # Entry point
+│   │   │
+│   │   ├── app/                      # Pagine (gestite da React Router)
+│   │   │   ├── circuits/
+│   │   │   ├── drivers/
+│   │   │   ├── races/
+│   │   │   ├── seasons/
+│   │   │   ├── teams/
+│   │   │   └── 404/not-found.tsx
+│   │   │
+│   │   ├── components/               # Componenti riutilizzabili
+│   │   │   ├── Navbar.tsx            # Navigazione (React Router)
+│   │   │   ├── Skeleton.tsx          # Loader skeleton
+│   │   │   ├── ErrorBoundary.tsx
+│   │   │   ├── CircuitCard.tsx
+│   │   │   ├── DriverCard.tsx
+│   │   │   ├── RaceCard.tsx
+│   │   │   ├── SeasonCard.tsx
+│   │   │   └── TeamCard.tsx
+│   │   │
+│   │   ├── hooks/                    # Custom React Hooks
+│   │   │   ├── useCircuits.ts
+│   │   │   ├── useDrivers.ts
+│   │   │   ├── useRaces.ts
+│   │   │   ├── useSeasons.ts
+│   │   │   └── useTeams.ts
+│   │   │
+│   │   ├── service/                  # Servizi API (chiama backend)
+│   │   │   ├── circuitService.ts
+│   │   │   ├── driverService.ts
+│   │   │   ├── raceService.ts
+│   │   │   ├── seasonService.ts
+│   │   │   ├── teamService.ts
+│   │   │   └── utils.ts
+│   │   │
+│   │   ├── types/                    # Type definitions TypeScript
+│   │   │   ├── circuit.ts
+│   │   │   ├── driver.ts
+│   │   │   ├── race.ts
+│   │   │   ├── season.ts
+│   │   │   ├── team.ts
+│   │   │   └── index.ts
+│   │   │
+│   │   └── .env.local                # VITE_API_URL=http://localhost:3000
+│   │
+│   ├── vite.config.ts
+│   ├── package.json
+│   └── tsconfig.json
+│   
+├       |── src/                              # Next.js Backend (API routes)
+│   └── app/
+│       ├── api/                      # API Endpoints (con CORS)
+│       │   ├── circuits/route.ts     # GET http://localhost:3000/api/circuits
+│       │   ├── drivers/route.ts      # GET http://localhost:3000/api/drivers
+│       │   ├── races/route.ts        # GET http://localhost:3000/api/races
+│       │   ├── seasons/route.ts      # GET http://localhost:3000/api/seasons
+│       │   └── teams/route.ts        # GET http://localhost:3000/api/teams
+│       │
+│       └── globals.css
 │
-├── hooks/                    # Custom React Hooks
-│   ├── useCircuits.ts        # Hook per circuiti
-│   ├── useDrivers.ts         # Hook per piloti
-│   ├── useRaces.ts           # Hook per gare
-│   ├── useSeasons.ts         # Hook per stagioni
-│   └── useTeams.ts           # Hook per team
-│
-├── service/                  # Servizi API (Business Logic)
-│   ├── circuitService.ts     # Logica circuiti
-│   ├── driverService.ts      # Logica piloti
-│   ├── raceService.ts        # Logica gare
-│   ├── seasonService.ts      # Logica stagioni
-│   ├── teamService.ts        # Logica team
-│   └── utils.ts              # Utility functions (format, helpers)
-│
-└── types/                    # Type definitions TypeScript
-    ├── circuit.ts            # Interface Circuit
-    ├── driver.ts             # Interface Driver
-    ├── race.ts               # Interface RaceStats
-    ├── season.ts             # Interface Season
-    ├── team.ts               # Interface Team
-    └── index.ts              # Types globali e avanzati
+├── next.config.ts
+├── tsconfig.json
+├── package.json
+└── README.md
 ```
 
 ---
@@ -136,27 +159,69 @@ cd uf07web-esame-react-f1
 ### Step 2: Installare le dipendenze
 
 ```bash
+# Installa dipendenze del backend (Next.js)
 npm install
+
+# Installa dipendenze del frontend (React+Vite)
+cd Frontend/F1-STATS
+npm install
+cd ../..
 ```
 
-### Step 3: Avviare il server di sviluppo
+
+### Step 3: Avviare l'applicazione
+**Opzione A: Script shell automatico (CONSIGLIATO)**
+
+Dalla root del progetto:
+
+**Su Linux/macOS:**
+```bash
+chmod +x dev.sh
+./dev.sh
+```
+
+**Su Windows:**
+```cmd
+dev.bat
+```
+
+Questo avvia automaticamente:
+- Backend Next.js su `http://localhost:3000`
+- Frontend Vite su `http://localhost:5173`
+
+**Opzione B: Script npm**
 
 ```bash
+npm run dev:all
+```
+
+**Opzione C: Manual (due terminali separati)**
+
+Terminale 1 - Backend:
+```bash
+npm run dev
+```
+
+Terminale 2 - Frontend:
+```bash
+cd Frontend/F1-STATS
 npm run dev
 ```
 
 ### Step 4: Aprire nel browser
 
 ```
-http://localhost:3000
+http://localhost:5173
 ```
 
 ---
 
 ## Comandi disponibili
 
+### Backend (Next.js)
+
 ```bash
-# Avviare in modalità sviluppo (hot reload)
+# Avviare in modalità sviluppo (http://localhost:3000)
 npm run dev
 
 # Build per produzione
@@ -168,23 +233,40 @@ npm start
 # Verifica TypeScript
 npx tsc --noEmit
 
-# Linting (se configurato)
+# Linting
 npm run lint
 ```
 
----
+### Frontend (React+Vite)
+
+```bash
+cd Frontend/F1-STATS
+
+# Avviare in modalità sviluppo (http://localhost:5173)
+npm run dev
+
+# Build per produzione
+npm run build
+
+# Preview della build
+npm run preview
+
+# Linting
+npm run lint
+```
 
 ## Funzionalità implementate
 
 ### Core Features (Requisiti minimi)
 
 - **5 pagine principali**: Drivers, Teams, Seasons, Races, Circuits
-- **Routing dinamico**: Navigate tra pagine via Navbar
-- **Chiamate API GET**: Tutte le risorse fetch da API esterna
-- **React Query**: Caching con staleTime 5 minuti, retry 3 volte
+- **Routing dinamico**: React Router con navigazione tramite Navbar
+- **Chiamate API GET**: Tutte le risorse fetch da backend Next.js
+- **TanStack Query**: Caching con staleTime 5 minuti, retry 3 volte
 - **TypeScript**: Type safety completa su types, components, hooks
 - **Error Handling**: Try/catch su API, Error Boundary su UI
 - **Loading States**: Skeleton components durante fetch
+- **Architettura Frontend/Backend**: Separazione completa tra UI e API
 
 ### Advanced Features
 
@@ -196,6 +278,8 @@ npm run lint
 - **Async/await**: Tutti i servizi async con proper error handling
 - **Paginazione**: Offset-based per circuiti/piloti/team, year-based per gare
 - **JSDoc Comments**: Documentazione inline su tutti i file
+- **CORS Handling**: Header CORS configurati nel backend
+- **Variabili d'ambiente**: VITE_API_URL per configurazione frontend
 
 ### UX/UI Features
 
@@ -213,20 +297,52 @@ npm run lint
 ### Data Flow
 
 ```
-API esterna (f1connectapi.vercel.app)
+API F1 esterna (f1connectapi.vercel.app)
     ↓
-API Routes (/api/[entity])
+Backend Next.js API Routes (/api/[entity])
+    ├─ Paginazione automatica
+    ├─ Delay per rate limiting
+    ├─ Caching 1 ora
+    └─ CORS headers
     ↓
-Services (circuitService, driverService, etc.)
+Frontend React+Vite Services (circuitService, etc.)
     ↓
-Custom Hooks (useCircuits, useDrivers, etc. + React Query)
+Custom Hooks (useCircuits, useDrivers, etc. + TanStack Query)
+    ├─ Caching 5 minuti
+    ├─ Retry automatico (3 volte)
+    └─ Background refetch
     ↓
 Components (Card components, Navbar, etc.)
     ↓
-UI (Browser)
+UI (Browser - localhost:5173)
 ```
 
-### React Query Configuration
+### Separazione Frontend/Backend
+
+```
+FRONTEND (React + Vite)
+├─ Porta: 5173
+├─ Responsabilità:
+│  ├─ Routing pagine
+│  ├─ UI components
+│  ├─ State management (TanStack Query)
+│  └─ User interactions
+└─ Comunica via HTTP fetch
+
+         ↕ HTTP + CORS
+
+BACKEND (Next.js)
+├─ Porta: 3000
+├─ Responsabilità:
+│  ├─ API Endpoints (/api/*)
+│  ├─ Paginazione dati
+│  ├─ Rate limiting
+│  ├─ Caching
+│  └─ Aggregazione API esterna
+└─ Espone endpoint REST
+```
+
+### TanStack Query Configuration
 
 ```typescript
 - queryKey: array-based per cache granularity
@@ -279,12 +395,18 @@ L'applicazione implementa error handling su più livelli:
 
 ## Stato e caching
 
-**React Query** gestisce il caching intelligente:
+**TanStack Query** (nel frontend) gestisce il caching intelligente:
 
 - Dati in cache per 5 minuti
 - Refetch automatico quando la finestra torna in focus
 - Retry automatico (fino a 3 volte) su errori temporanei
 - Mutation support per operazioni future (POST/PUT/DELETE)
+
+**Next.js** (nel backend) cachea le risposte dell'API esterna:
+
+- Dati cacheati per 1 ora
+- Paginazione automatica gestita server-side
+- Rate limiting con delay (300ms tra batch)
 
 ---
 
@@ -323,20 +445,44 @@ Il progetto utilizza **CSS Modules** per scoping locale dei stili:
 
 ## Troubleshooting
 
-### "No QueryClient set" error
+### "Cannot find module" error nel frontend
 
-**Causa**: QueryProvider non wrapping l'app  
-**Soluzione**: Verificare che `src/app/layout.tsx` utilizzi `<QueryProvider>` wrapper
+**Causa**: Dipendenze non installate o VITE_API_URL non configurato  
+**Soluzione**: 
+```bash
+cd Frontend/F1-STATS
+npm install
+# Crea .env.local con VITE_API_URL=http://localhost:3000
+```
 
-### API non raggiungibile
+### CORS error "Access-Control-Allow-Origin"
 
-**Causa**: f1connectapi.vercel.app offline o rete assente  
-**Soluzione**: Verificare connessione internet, controllare console per dettagli
+**Causa**: Backend non stà su localhost:3000 o script dev:all non avviato correttamente  
+**Soluzione**: 
+```bash
+# Assicurati che entrambi i server siano avviati
+npm run dev:all
+# Oppure manualmente in due terminali
+```
 
-### TypeScript errors
+### API non raggiungibile (errore 404)
+
+**Causa**: Frontend chiama localhost:5173 al posto di localhost:3000  
+**Soluzione**: Verifica che nel service layer usi `http://localhost:3000/api/*`
+
+### Frontend mostra "Cannot GET /"
+
+**Causa**: Apri localhost:3000 al posto di localhost:5173  
+**Soluzione**: Usa `http://localhost:5173` per il frontend, `http://localhost:3000` solo per API debug
+
+### TypeScript errors nel frontend
 
 **Causa**: Type mismatch o missing imports  
-**Soluzione**: Eseguire `npx tsc --noEmit` per vedere tutti gli errori
+**Soluzione**: 
+```bash
+cd Frontend/F1-STATS
+npx tsc --noEmit
+```
 
 ### Stale cache data
 
