@@ -1,6 +1,6 @@
 {
   "name": "uf07web-esame-react-f1",
-  "version": "nonesistevesionegiusta",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.20",
-    "next": "16.1.5",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@types/node": "^20",

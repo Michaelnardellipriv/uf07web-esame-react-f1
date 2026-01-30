@@ -5,6 +5,7 @@ import TeamCard from './TeamCard';
 import Skeleton from '@/components/Skeleton';
 import styles from './page.module.css';
 import { useState } from 'react';
+import type {Team} from "@/types/team";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -38,8 +39,8 @@ export default function TeamsPage() {
 
         {!isLoading && !error && (
           <div className={styles.grid}>
-            {displayedTeams.map((team) => (
-              <TeamCard key={team.teamId} {...team} />
+            {displayedTeams.map((Team: Team) => (
+              <TeamCard key={Team.teamId} {...Team} />
             ))}
           </div>
         )}

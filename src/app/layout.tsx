@@ -1,38 +1,28 @@
-'use client';
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
-import ErrorBoundary from "@/components/ErrorBoundary";
-import { useMemo } from "react";
+import ReactQueryProvider from "@/components/ReactQueryProvider";
+// @ts-ignore
 import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "F1 STATS",
+  description: "Dashboard completa per dati Formula 1",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const queryClient = useMemo(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 1000 * 60 * 5, // 5 minuti
-            gcTime: 1000 * 60 * 10, // 10 minuti
-          },
-        },
-      }),
-    []
-  );
-
   return (
     <html lang="it">
+      <head />
       <body>
-        <ErrorBoundary>
-          <QueryClientProvider client={queryClient}>
-            <Navbar />
-            {children}
-          </QueryClientProvider>
-        </ErrorBoundary>
+        <ReactQueryProvider>
+          <Navbar />
+          {children}
+        </ReactQueryProvider>
       </body>
     </html>
   );
