@@ -1,6 +1,6 @@
 .container {
   width: 100%;
-  height: calc(100vh - var(--navbar-height, 70px));
+  height: calc(100vh - var(--navbar-height, 70px)); /* 70px è fallback di sicurezza */
   display: flex;
   flex-direction: column;
   overflow: hidden;

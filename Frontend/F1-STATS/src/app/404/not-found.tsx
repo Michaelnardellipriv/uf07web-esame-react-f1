@@ -1,9 +1,17 @@
-
-
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './not-found.module.css';
 
 export default function NotFound() {
+  useEffect(() => {
+    // Calcola automaticamente l'altezza della navbar
+    const navbar = document.querySelector('nav') as HTMLElement | null;
+    if (navbar) {
+      const navbarHeight: number = navbar.offsetHeight;
+      document.documentElement.style.setProperty('--navbar-height', `${navbarHeight}px`);
+    }
+  }, []);
+
   return (
     <div className={styles.container}>
       <div className={styles.overlay}></div>
